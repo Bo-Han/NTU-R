@@ -10,3 +10,5 @@
 Hello, hope this course will improve my skills of programing!!
 
 ## Progress report
+
+### Week 1 
