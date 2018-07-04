@@ -7,4 +7,4 @@
 * 新增 hw1.Rmd。
 
 ## hw1.html
-[hw1](https://bo-han.github.io/NTU-R/week1/hw1.html)
+https://bo-han.github.io/NTU-R/week1/hw1.html
