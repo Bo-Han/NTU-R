@@ -1,4 +1,4 @@
-﻿# NTU-R
+# NTU_CS+X_R
 
 ## 基本資料
 * 課程：夏季學院資料科學程式設計<br />
@@ -11,4 +11,5 @@ Hello, hope this course will improve my skills of programing!!
 
 ## Progress report
 
+---
 ### Week 1
