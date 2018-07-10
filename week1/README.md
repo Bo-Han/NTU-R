@@ -1,8 +1,8 @@
 ## Week1
 ### 課堂上
 1. Github
- * 建立 Github 帳號
- * 建立 Repository
+...* 建立 Github 帳號
+...* 建立 Repository
  * README.md 檔，內容為姓名、學號、組別
  * 建立 week1 資料夾
  * 新增 hw1.Rmd。
