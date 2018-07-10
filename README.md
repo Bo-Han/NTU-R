@@ -26,6 +26,8 @@ Hello, hope this course will improve my skills of programing!!
 ### 課後
 1. Datacamp完成Introduction to R, Intermediate R, 及Introduction to Tidyverse
 2. 編輯Rmd檔，寫一些筆記
-3. 成果展示：hw1.html
+
+### 筆記連結
+hw1.html
 https://bo-han.github.io/NTU-R/week1/hw1.html
 
