@@ -28,6 +28,6 @@ Hello, hope this course will improve my skills of programing!!
 2. 編輯Rmd檔，寫一些筆記
 
 ### 筆記連結
-hw1.html
+hw1.html<br />
 https://bo-han.github.io/NTU-R/week1/hw1.html
 
