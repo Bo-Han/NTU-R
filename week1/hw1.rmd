@@ -141,4 +141,3 @@ lapply(x,round)    ##結果會變一個list
 ```{r comment=''}
 sapply(x,round)    ##結果會變一個vector，比lapply的結果簡單，不過有時不一定可以達到效果
 ```
-
