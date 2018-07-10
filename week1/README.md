@@ -1,13 +1,13 @@
 ## Week1
 ### 課堂上
-1. Github
- * 建立 Github 帳號
- * 建立 Repository
- * README.md 檔，內容為姓名、學號、組別
- * 建立 week1 資料夾
- * 新增 hw1.Rmd。
- * 將Rmd檔轉為網頁（html）
-2. 安裝R及R studio
+* Github
+…1. 建立 Github 帳號
+ 2. 建立 Repository
+ 3. README.md 檔，內容為姓名、學號、組別
+ 4. 建立 week1 資料夾
+ 5. 新增 hw1.Rmd。
+ 6. 將Rmd檔轉為網頁（html）
+* 安裝R及R studio
 
 
 ### 課後
