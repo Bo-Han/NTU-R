@@ -14,6 +14,6 @@
 2. 編輯Rmd檔，寫一些筆記
 
 ### 成果展示：
-hw1.html
+hw1.html<br />
 https://bo-han.github.io/NTU-R/week1/hw1.html
 
