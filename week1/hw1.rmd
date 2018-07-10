@@ -89,3 +89,56 @@ li[[6]][3,2]  ##後來的[]是針對已選取此項裡面的元素
 ```{r comment=''}
 str(li)
 ```
+
+## Course 2: Intermediate R
+
+### 向量比較大小
+```{r comment=''}
+a=c(5,-2,6,-9,7)
+b=c(6,-3,5,8,1,4,-1)
+a>b     #結果會出現Warning，因為兩者長度不一樣，不過有少的會自動判讀為0
+```
+### 條件指令A: if-else + for loop
+```{r comment=''}
+x=c(1,19,42,17,25,8,29)
+for (l in x){
+if(l%%4==1){
+  print(l)
+}}
+```
+### 條件指令B: if-elseif + for loop
+```{r comment=''}
+x=c(1,19,42,17,25,8,29,11,26,44,6,38,16,27)
+for (l in x){
+if(l%%4==1){
+  print(paste("number",l,"is Ray's student"))
+}else if (l%%4==0){
+  print(paste("number",l,"is Kuang-Chi's student"))
+}else if (l%%4==2){
+  print(paste("number",l,"is Po-Yi's student"))
+}else if (l%%4==3){
+  print(paste("number",l,"is River's student"))
+}
+}
+
+```
+### 條件指令C: if-else + for loop
+```{r comment=''}
+x=c(1,19,42,17,25,8,29,11,26,44,13)
+for (l in x){
+if(l%%4==1){
+  print(paste("number",l,"is Ray's student"))
+}else {
+  print(paste("number",l,"is not Ray's student"))
+}}
+```
+### Lapply（用更簡單的方式取代迴圈）
+```{r comment=''}
+x=c(5.26,2.36,4.78,9.85,3.14,7.92)  ##首先必須是一向量或list
+lapply(x,round)    ##結果會變一個list
+```
+### Sapply（以更簡單的結果取代sapply）
+```{r comment=''}
+sapply(x,round)    ##結果會變一個vector，比lapply的結果簡單，不過有時不一定可以達到效果
+```
+

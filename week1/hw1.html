@@ -316,6 +316,106 @@ $dataframe
   ..$ X2: num [1:3] 100 300 500</code></pre>
 </div>
 </div>
+<div id="course-2-intermediate-r" class="section level2">
+<h2>Course 2: Intermediate R</h2>
+<div class="section level3">
+<h3>向量比較大小</h3>
+<pre class="r"><code>a=c(5,-2,6,-9,7)
+b=c(6,-3,5,8,1,4,-1)
+a&gt;b     #結果會出現Warning，因為兩者長度不一樣，不過有少的會自動判讀為0</code></pre>
+<pre><code>Warning in a &gt; b: 較長的物件長度並非較短物件長度的倍數</code></pre>
+<pre><code>[1] FALSE  TRUE  TRUE FALSE  TRUE  TRUE FALSE</code></pre>
+</div>
+<div id="a-if-else-for-loop" class="section level3">
+<h3>條件指令A: if-else + for loop</h3>
+<pre class="r"><code>x=c(1,19,42,17,25,8,29)
+for (l in x){
+if(l%%4==1){
+  print(l)
+}}</code></pre>
+<pre><code>[1] 1
+[1] 17
+[1] 25
+[1] 29</code></pre>
+</div>
+<div id="b-if-elseif-for-loop" class="section level3">
+<h3>條件指令B: if-elseif + for loop</h3>
+<pre class="r"><code>x=c(1,19,42,17,25,8,29,11,26,44,6,38,16,27)
+for (l in x){
+if(l%%4==1){
+  print(paste(&quot;number&quot;,l,&quot;is Ray's student&quot;))
+}else if (l%%4==0){
+  print(paste(&quot;number&quot;,l,&quot;is Kuang-Chi's student&quot;))
+}else if (l%%4==2){
+  print(paste(&quot;number&quot;,l,&quot;is Po-Yi's student&quot;))
+}else if (l%%4==3){
+  print(paste(&quot;number&quot;,l,&quot;is River's student&quot;))
+}
+}</code></pre>
+<pre><code>[1] &quot;number 1 is Ray's student&quot;
+[1] &quot;number 19 is River's student&quot;
+[1] &quot;number 42 is Po-Yi's student&quot;
+[1] &quot;number 17 is Ray's student&quot;
+[1] &quot;number 25 is Ray's student&quot;
+[1] &quot;number 8 is Kuang-Chi's student&quot;
+[1] &quot;number 29 is Ray's student&quot;
+[1] &quot;number 11 is River's student&quot;
+[1] &quot;number 26 is Po-Yi's student&quot;
+[1] &quot;number 44 is Kuang-Chi's student&quot;
+[1] &quot;number 6 is Po-Yi's student&quot;
+[1] &quot;number 38 is Po-Yi's student&quot;
+[1] &quot;number 16 is Kuang-Chi's student&quot;
+[1] &quot;number 27 is River's student&quot;</code></pre>
+</div>
+<div id="c-if-else-for-loop" class="section level3">
+<h3>條件指令C: if-else + for loop</h3>
+<pre class="r"><code>x=c(1,19,42,17,25,8,29,11,26,44,13)
+for (l in x){
+if(l%%4==1){
+  print(paste(&quot;number&quot;,l,&quot;is Ray's student&quot;))
+}else {
+  print(paste(&quot;number&quot;,l,&quot;is not Ray's student&quot;))
+}}</code></pre>
+<pre><code>[1] &quot;number 1 is Ray's student&quot;
+[1] &quot;number 19 is not Ray's student&quot;
+[1] &quot;number 42 is not Ray's student&quot;
+[1] &quot;number 17 is Ray's student&quot;
+[1] &quot;number 25 is Ray's student&quot;
+[1] &quot;number 8 is not Ray's student&quot;
+[1] &quot;number 29 is Ray's student&quot;
+[1] &quot;number 11 is not Ray's student&quot;
+[1] &quot;number 26 is not Ray's student&quot;
+[1] &quot;number 44 is not Ray's student&quot;
+[1] &quot;number 13 is Ray's student&quot;</code></pre>
+</div>
+<div id="lapply" class="section level3">
+<h3>Lapply（用更簡單的方式取代迴圈）</h3>
+<pre class="r"><code>x=c(5.26,2.36,4.78,9.85,3.14,7.92)  ##首先必須是一向量或list
+lapply(x,round)    ##結果會變一個list</code></pre>
+<pre><code>[[1]]
+[1] 5
+
+[[2]]
+[1] 2
+
+[[3]]
+[1] 5
+
+[[4]]
+[1] 10
+
+[[5]]
+[1] 3
+
+[[6]]
+[1] 8</code></pre>
+</div>
+<div id="sapplysapply" class="section level3">
+<h3>Sapply（以更簡單的結果取代sapply）</h3>
+<pre class="r"><code>sapply(x,round)    ##結果會變一個vector，比lapply的結果簡單，不過有時不一定可以達到效果</code></pre>
+<pre><code>[1]  5  2  5 10  3  8</code></pre>
+</div>
+</div>
 </div>
 
 
