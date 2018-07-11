@@ -1,0 +1,35 @@
+
+# HW2-part1
+
+## iris繪圖
+
+### 1
+```{r comment=''}
+library(ggplot2)
+library(dplyr)
+
+```
+### iris
+```{r comment=''}
+head(iris)
+```
+### 長條圖（單變數類別型）
+```{r comment=''}
+ggplot(data=iris,aes(x=Species))+geom_bar()
+```
+### 直方圖（單變數連續型）
+```{r comment=''}
+ggplot(data=iris,aes(x=Sepal.Width))+geom_histogram()
+```
+### 散佈圖（雙變數：連續/連續）
+```{r comment=''}
+ggplot(data=iris,aes(x=Sepal.Width,y=Sepal.Length,color=Species,size=Petal.Length))+geom_point()
+```
+### 散佈圖（分三種類：facet）
+```{r comment=''}
+ggplot(data=iris,aes(x=Sepal.Width,y=Sepal.Length))+geom_point()+facet_wrap(~Species)
+```
+### 盒形圖（雙變數：連續/階梯）
+```{r comment=''}
+ggplot(data=iris,aes(x=Species,y=Sepal.Length))+geom_boxplot()
+```
