@@ -12,7 +12,7 @@
       [hw2-part2](https://bo-han.github.io/NTU-R/week2/hw2-part2)
 
 ### 回家
-1. BONUS地圖繪製作業
+1. BONUS地圖繪製作業<br />
    成果<br />
    [hw2-BONUS](https://bo-han.github.io/NTU-R/week2/hw2-BONUS)
 2. 完成datacamp課程
