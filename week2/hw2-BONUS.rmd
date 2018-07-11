@@ -1,0 +1,27 @@
+
+# HW2-BONUS
+
+## 地圖繪製
+
+### 安裝一些繪圖套件
+```{r comment=""}
+library(ggplot2)
+library(ggmap)
+library(mapproj)
+library(maps)
+```
+
+### 存入底圖資料
+```{r comment=''}
+map <- get_map(location = c(lon = 121.555, lat = 25.0592), zoom = 12,language = "zh-TW",maptype = "toner-lite")
+```
+
+### 匯入csv檔案（台北市自行車竊盜資料102年到107年）
+```{r commemt=''}
+u <- read.csv("Address_Finish.csv")
+```
+
+### 繪圖
+```{r comment=''}
+ggmap(map) + geom_point(aes(x = Response_X, y = Response_Y ), data = u )+labs(title = "台北市102年到107年自行車竊盜分布地圖")
+```
