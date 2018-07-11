@@ -41,5 +41,6 @@ https://bo-han.github.io/NTU-R/week1/hw1.html
 [hw2-part1](https://bo-han.github.io/NTU-R/week2/hw2)
 
 2. 下午
-成果
-[hw2-part2]()
+   1. 網路爬蟲+文字雲
+   2. 成果<br />
+[hw2-part2](https://bo-han.github.io/NTU-R/week2/hw2-part2)
