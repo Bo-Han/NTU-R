@@ -84,6 +84,7 @@ docs <- tm_map(docs, toSpace, "樣")
 docs <- tm_map(docs, toSpace, "能")
 docs <- tm_map(docs, toSpace, "點")
 docs <- tm_map(docs, toSpace, "過")
+docs <- tm_map(docs, toSpace, "店員")
 #移除標點符號 (punctuation)
 #移除數字 (digits)、空白 (white space)
 docs <- tm_map(docs, removePunctuation)
@@ -108,8 +109,8 @@ kable(head(freqFrame), format = "markdown")
 ```{r comment=""}
 wordcloud(freqFrame$Var1,freqFrame$Freq,
           scale=c(5,0.1),min.freq=50,max.words=150,
-          random.order=TRUE, random.color=FALSE, 
+          random.order=F, random.color=FALSE, 
           rot.per=.1, colors=brewer.pal(8, "Dark2"),
-          ordered.colors=FALSE,use.r.layout=FALSE,
+          ordered.colors=F,use.r.layout=FALSE,
           fixed.asp=TRUE)
 ```
