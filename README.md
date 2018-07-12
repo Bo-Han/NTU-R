@@ -44,3 +44,10 @@ https://bo-han.github.io/NTU-R/week1/hw1.html
    1. 網路爬蟲+文字雲
    2. 成果<br />
 [hw2-part2](https://bo-han.github.io/NTU-R/week2/hw2-part2)
+
+### 回家
+1. BONUS地圖繪製作業<br />
+   成果<br />
+   [hw2-BONUS](https://bo-han.github.io/NTU-R/week2/hw2-BONUS)
+2. 完成datacamp課程
+
