@@ -14,14 +14,12 @@ library(plotly) # for interactive plots
 library(cowplot) # to have get_legent
 ```
 
-### 匯入csv資料以及檢視一下資訊，總共有三個檔案，分別代表2015、2016、2017三個年度
+### 匯入csv資料以及看一下長怎樣，總共有三個檔案，分別代表2015、2016、2017三個年度
 ```{r  message=FALSE, warning=FALSE, comment=''}
 happy_2015 <- read.csv("2015.csv")
 happy_2016 <- read.csv("2016.csv")
 happy_2017 <- read.csv("2017.csv")
 str(happy_2015)
-str(happy_2016)
-str(happy_2017)
 ```
 
 ### 因到時會把三個dataframe整合成一個dataframe，所以重新命名三個年度的column名稱以利辨別
@@ -33,11 +31,12 @@ colnames(happy_2017) <- c("Country","Rank_2017","Score_2017","Whisker.high_2016"
 ```
 
 ### 利用merge函數，接合三個dataframe成新的一個
+### 查看前6筆資料
 ```{r  message=FALSE, warning=FALSE, comment=''}
 happy <- merge(happy_2015, happy_2016, by.x = "Country", by.y = "Country")
 happy <- merge(happy, happy_2017, by.x = "Country", by.y = "Country")
 happy$Region_2016 <- NULL
-str(happy)  
+head(happy)  
 ```
 
 ### 更改一些國家名字
@@ -50,6 +49,183 @@ happy$Country <- recode(happy$Country,
                         ")
 ```
 
+### 因第一欄（國家名）是屬於factor，所以要將它改成字串資料，才能做成地圖
 ```{r  message=FALSE, warning=FALSE, comment=''}
+class(happy[,1])
 happy[,1]=as.character(happy[,1])
+```
+
+### 製作面量圖，每個國家的幸福指數比較
+```{r  message=FALSE, warning=FALSE, comment='', results='markup', fig.width=7, fig.height=6}
+w <- map_data("world")
+colnames(w)[5]<- "Country"
+myw <- inner_join(w, happy, by = "Country")
+worldplot <- ggplot(data = w, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1) + 
+  geom_polygon(color = "black", fill = "gray") +
+  geom_polygon(data=myw, aes(x = long, y = lat, group = group, fill = Score_2017),color = "white") +
+  geom_polygon(color = "black", fill = NA) +
+  theme_bw() +
+  ggtitle("Happiness Score in 2017 in the World") +
+  scale_fill_distiller(palette = "Spectral")
+worldplot
+```
+
+### Compute the variation in percentage between 2017 and 2015
+```{r  message=FALSE, warning=FALSE, comment=''}
+happy$var_2016_2015 = 100*(happy$Score_2016 - happy$Score_2015)/happy$Score_2015
+happy$var_2017_2016 = 100*(happy$Score_2017 - happy$Score_2016)/happy$Score_2016
+happy$var_2017_2015 = 100*(happy$Score_2017 - happy$Score_2015)/happy$Score_2015
+```
+
+### 比較看看他們年份間的波動
+```{r  message=FALSE, warning=FALSE, comment='',results='markup', fig.width=7}
+pv <- ggplot(data=happy, aes(x=var_2017_2015, y=Region, text =paste("country:", Country))) +
+  geom_point(aes(color=Score_2017), size=3, alpha=0.6) +
+  xlab("Happiness variation between 2015 and 2017 [%]")+
+  scale_colour_distiller(palette = "Spectral")+
+  theme_bw() 
+#scale_colour_gradientn(colours=rainbow(3)) # different colour scheme I tested, but in the end I line Spectral better
+pv <- ggplotly(pv)
+pv 
+```
+
+#### 可以看出2017幸福指數越高的國家，波動越小；反之，波動較大
+```{r}
+```
+
+### Are "Happy" People Really Happy?
+### 在此我們要看他們的幸福指數跟他的行為跡象是否相關
+### 下載Kaggle dataset [65 World Indexes](https://www.kaggle.com/joniarroba/65-world-indexes-gathered)並匯入
+```{r message=FALSE, warning=FALSE, comment=''}
+kaggle <- read.csv("Kaggle.csv")
+colnames(kaggle)[1] <- "Country"
+merged <- merge(happy, kaggle, by.x = "Country", by.y = "Country")
+```
+
+### 謀殺率與幸福指數
+```{r message=FALSE, warning=FALSE, comment='', fig.width=7}
+ggplot(data=merged, aes(y=Homicide.rate.per.100k.people.2008.2012, x=Score_2015))+
+  theme_bw() +
+  geom_point(aes(color=Region), size=3, alpha=0.6)   +
+  geom_smooth() +
+  ylab("Homicide Rate per 100k people 2008-2012")+
+  xlab("Happiness Score in 2015")
+```
+
+#### 可以看出其實有地區性的差異
+```{r}
+```
+
+### 自殺率與幸福指數（分男女）
+```{r message=FALSE, warning=FALSE, comment='', results='markup', fig.width=10, fig.height=5}
+srf <- ggplot(data=merged, aes(y=Female.Suicide.Rate.100k.people, x=Score_2015))+
+  theme_bw() +
+  geom_point(aes(color=Region), size=3, alpha=0.6) + geom_smooth()+
+  ylab("Female Suicide Rate per 100k people")+
+  xlab("Happiness Score in 2015")
+
+srm <- ggplot(data=merged, aes(y=MaleSuicide.Rate.100k.people, x=Score_2015))+
+  theme_bw() +
+  geom_point(aes(color=Region), size=3, alpha=0.6) +
+  geom_smooth() +
+  ylab("Male Suicide Rate per 100k people")+
+  xlab("Happiness Score in 2015")
+
+grid.arrange(srf+theme(legend.position = "none"), srm+theme(legend.position = "none"), get_legend(srm), ncol = 3)
+```
+
+#### 也是一樣，每個洲合在一起看看不出所以然，因他還是有地區性差異
+```{r}
+```
+
+### 「西歐」的自殺率與幸福指數
+```{r message=FALSE, warning=FALSE, comment='', results='markup', fig.width=10, fig.height=6}
+europe<-merged[ merged$Region=="Western Europe", ]
+
+srfe <- ggplot(data=europe, aes(y=Female.Suicide.Rate.100k.people, x=Score_2015))+
+  theme_bw() +
+  geom_smooth()+
+  scale_color_distiller(palette = "Spectral")+
+  geom_text(aes(label=Country)) +
+  xlab("Happiness Score in 2015") +
+  geom_point(aes(color=GDP_2015), size=4, alpha=0.6) + 
+  ylab("Female Suicide Rate per 100k people")
+
+srme <-ggplot(data=europe, aes(y=MaleSuicide.Rate.100k.people, x=Score_2015))+
+  theme_bw() +
+  geom_smooth()+
+  scale_color_distiller(palette = "Spectral")+
+  geom_text(aes(label=Country)) +
+  xlab("Happiness Score in 2015") +
+  geom_point(aes(color=GDP_2015), size=4, alpha=0.6) + 
+  ylab("Male Suicide Rate per 100k people")
+
+grid.arrange(srfe+theme(legend.position="none"), srme+theme(legend.position="none"), get_legend(srme), ncol = 3,widths=c(3,3,1))
+```
+
+#### 可以看出無論男女，幸福指數高的國家，每10萬人的自殺個案就越高
+```{r}
+```
+
+### 在此我們要檢視溫度與幸福指數是否相關
+### 下載[Climate Change: Earth Surface Temperature Data](https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data) dataset並匯入
+```{r message=FALSE, warning=FALSE, comment=''}
+weather_all <- read.csv("GlobalLandTemperaturesByCountry.csv",fileEncoding='UTF-8')
+weather_2013_01 <- weather_all[weather_all$dt=="2013-01-01",]
+weather_2013_01[weather_2013_01$Country=="Denmark",]<-weather_2013_01[weather_2013_01$Country=="Denmark (Europe)",]
+merged <- merge(merged, weather_2013_01, by.x = "Country", by.y = "Country")
+
+```
+
+### 溫度與幸福指數
+```{r message=FALSE, warning=FALSE, comment='', results='markup', fig.height=4.9, fig.width=4.7}
+europe<-merged[ merged$Region=="Western Europe", ]
+happy_temp  <- ggplot(data=europe, aes(y=AverageTemperature, x=Score_2015))+
+theme_bw() +
+geom_point(aes(color=GDP_2015), size=4, alpha=0.6) +
+geom_smooth() +
+scale_color_distiller(palette = "Spectral")+
+geom_text(aes(label=Country)) +
+ylab("Average Temperature Jan 2013")+
+xlab("Happiness Score in 2015")
+happy_temp  
+```
+
+#### 可以看出越冷國家，幸福指數越高，不過若合併自殺率來看...
+```{r}
+```
+
+### 溫度與自殺率
+```{r message=FALSE, warning=FALSE, comment='', fig.align='center', results='markup', fig.width=10, fig.height=6}
+
+pm <- ggplot(data=europe, aes(y=MaleSuicide.Rate.100k.people, x=AverageTemperature))+
+geom_point(aes(color=Score_2015), size=4, alpha=0.6) +
+theme_bw() +
+geom_smooth() +
+geom_text(aes(label=Country)) +
+scale_color_distiller(palette = "Spectral")+
+ylab("Male Suicide Rate per 100k people")+
+xlab("Average Temperature Jan 2013")
+
+pf <- ggplot(data=europe, aes(y=Female.Suicide.Rate.100k.people, x=AverageTemperature))+
+geom_point(aes(color=Score_2015), size=4, alpha=0.6) +
+theme_bw() +
+geom_smooth() + 
+geom_text(aes(label=Country)) +
+scale_color_distiller(palette = "Spectral")+
+ylab("Female Suicide Rate per 100k people")+
+xlab("Average Temperature Jan 2013")
+
+grid.arrange(pf+  theme(legend.position = "none"), pm+  theme(legend.position = "none"), get_legend(pf), ncol = 3, widths=c(3,3,1))
+```
+#### 最後可以看出越冷的國家，自殺率也會越高
+```{r}
+```
+
+### 結論：幸福指數是一個國家各個面向的平均狀態，若數字越高則代表整體狀況較佳，
+### 但是不代表適用於國內的每一個個案，由上面的自殺率來看，則得到意想不到的結果
+### ，幸福指數越高的國家如西北歐國家，自殺率反而越高，可能為高度發展國家面臨之
+### 問題。
+```{r}
 ```

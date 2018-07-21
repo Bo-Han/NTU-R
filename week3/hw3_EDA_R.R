@@ -208,7 +208,7 @@ str(merged)
 ```
 
 
-First of all, let's look at the dependence of the happiness score on the average January temperature
+First of all, lets look at the dependence of the happiness score on the average January temperature
 
 ```{r happiness_temp, results='markup', fig.height=4.9, fig.width=4.7}
 europe<-merged[ merged$Region=="Western Europe", ]
