@@ -58,7 +58,7 @@ https://bo-han.github.io/NTU-R/week1/hw1.html
    1. 閱讀Kaggle script
    2. 做EDA作業
    3. 成果網址<br />
-[hw3-part1]
+[hw3-part1](https://bo-han.github.io/NTU-R/week3/hw3)
 
 2. 下午
    1. 了解甚麼是TFIDF、PCA跟KMEANS
