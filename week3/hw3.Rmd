@@ -219,6 +219,7 @@ xlab("Average Temperature Jan 2013")
 
 grid.arrange(pf+  theme(legend.position = "none"), pm+  theme(legend.position = "none"), get_legend(pf), ncol = 3, widths=c(3,3,1))
 ```
+
 #### 最後可以看出越冷的國家，自殺率也會越高
 ```{r}
 ```
