@@ -1,3 +1,8 @@
+---
+title: "hw3-part2: tfidf-pca-kmeans"
+---
+### 載入需要的套件
+```{r  message=FALSE, warning=FALSE, comment=''}
 library(bitops)
 library(httr)
 library(RCurl)
@@ -14,18 +19,20 @@ library(grid)
 library(ggbiplot)
 library(XML)
 library(knitr)
+```
 
-
-# INPUT DATA
+### 匯入資料：範例資料
+```{r  message=FALSE, warning=FALSE, comment=''}
 d.corpus <- Corpus( DirSource("./DATA" ))
 d.corpus <- tm_map(d.corpus, removePunctuation)
 d.corpus <- tm_map(d.corpus, removeNumbers)
 d.corpus <- tm_map(d.corpus, function(word) {
   gsub("[A-Za-z0-9]", "", word)
 })
+```
 
-
-# TDM詞頻矩陣
+### TDM詞頻矩陣
+```{r  message=FALSE, warning=FALSE, comment=''}
 mixseg = worker()
 jieba_tokenizer = function(d)
 {
@@ -49,10 +56,10 @@ for( id in c(2:n) )
   names(TDM) = c('d', colNames[1:id])
 }
 TDM[is.na(TDM)] <- 0
-kable(head(TDM))
+```
 
-
-# TF-IDF
+### TF-IDF
+```{r  message=FALSE, warning=FALSE, comment=''}
 tf <- apply(as.matrix(TDM[,2:(n+1)]), 2, sum)
 
 library(Matrix)
@@ -69,8 +76,10 @@ doc.tfidf[,2:(n+1)] <- (doc.tfidf[,2:(n+1)] / tempY) * tempX
 
 stopLine = rowSums(doc.tfidf[,2:(n+1)])
 delID = which(stopLine == 0)
+```
 
-
+### PCA
+```{r  message=FALSE, warning=FALSE, comment=''}
 t = as.data.frame(t(doc.tfidf))
 t = t[-1,]
 t = apply(t[,1:100], 2, as.numeric)
@@ -90,7 +99,10 @@ fviz_pca_biplot(t_pca, geom.ind = "point",repel = TRUE)
 t.eig <- get_eig(t_pca)
 t.var <- get_pca_var(t_pca)
 t.ind <- get_pca_ind(t_pca)
+```
 
+### K-means
+```{r  message=FALSE, warning=FALSE, comment=''}
 ind.coord2 <- t.ind$coord[, 1:2]
 wss <- c()
 for (i in 1:10) { wss[i] <- kmeans(ind.coord2, i)$tot.withinss }
@@ -99,4 +111,5 @@ plot(wss, type = "b")
 kmeansData = t_pca$rotation[,1:2]
 cl <- kmeans(kmeansData, 2)
 plot(kmeansData, col = cl$cluster)
-points(cl$centers, col = 1:2, pch = 8, cex = 2)
+points(cl$centers, col = 1:2, pch = 8, cex = 2) #分兩群
+```
