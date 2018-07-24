@@ -64,7 +64,7 @@ https://bo-han.github.io/NTU-R/week1/hw1.html
    1. 了解甚麼是TFIDF、PCA跟KMEANS
    2. 以上述概念來做文字探勘
    3. 成果網址<br />
-[hw3-part2]
+[hw3-part2](https://bo-han.github.io/NTU-R/week3/hw3-part2)
 
 ### 回家
 1. 完成課堂還沒完成的任務
