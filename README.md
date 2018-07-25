@@ -71,6 +71,7 @@ https://bo-han.github.io/NTU-R/week1/hw1.html
 2. datacamp課程
 
 ---
+### week4
 ### 課堂上
 1. 上午
    1. 了解統計基本概念，TEP
