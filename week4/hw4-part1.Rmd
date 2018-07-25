@@ -1,0 +1,239 @@
+---
+title: "hw4-regression"
+---
+
+### 載入ggplot2繪圖套件，以及匯入資料
+```{r include=FALSE message=FALSE, warning=FALSE, comment=''}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+dta <- read.table(file = "data/TIMSS2011TW.txt", header = TRUE)
+```
+
+### 檢視資料結構
+```{r include=FALSE message=FALSE, warning=FALSE, comment=''}
+str(dta)
+```
+
+### 欄位統計
+```{r include=FALSE message=FALSE, warning=FALSE, comment=''}
+summary(dta)
+```
+
+## 性別V.S.科學成績
+### 男女成績的盒狀圖：可以看出兩者其實差不多
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, aes(x = gender, y = science))+
+ geom_boxplot() + coord_flip() +
+ labs( y = 'science', x = 'gender', 
+       title = 'Science Score Box')
+```
+
+### 利用T檢定：p-value>0.05，代表性別影響不顯著
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+
+t.test(science ~ gender, data = dta)
+
+t.test(science ~ gender, data = dta, var.equal = TRUE)
+```
+
+## 學習興趣V.S.科學成績
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+library(Hmisc)
+dta$science.interest_round<-round(dta$science.interest)
+dta$science.interest_round<-factor(dta$science.interest_round, 
+                       levels = c(5:13))
+
+ggplot(data = dta, 
+       aes(x = science.interest_round, y = science))+geom_boxplot() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+### anova：各區段學習興趣（5～13）
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+anova(m1 <- lm(science ~ science.interest_round, data = dta))
+```
+
+### science.evaluation 價值評估V.S.科學成績：盒狀圖
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+dta$science.evaluation_round<-round(dta$science.evaluation)
+dta$science.evaluation_round<-factor(dta$science.evaluation_round, 
+                       levels = c(4:13))
+
+ggplot(data = dta, 
+       aes(x = science.evaluation_round, y = science))+geom_boxplot() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+### science.evaluation 價值評估V.S.科學成績：分布密度圖
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, 
+       aes(fill = science.evaluation_round, x = science))+geom_density(alpha=0.3) +
+  scale_x_continuous(breaks = seq(250,750,by=100)) 
+```
+
+### anova：各區段價值評估（4～13）
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+anova(m2 <- lm(science ~ science.evaluation_round, data = dta))
+```
+
+### science.input 投入程度V.S.科學成績：散佈圖
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+dta$science.input_round<-round(dta$science.input)
+dta$science.input_round<-factor(dta$science.input_round, 
+                       levels = c(4:14))
+
+ggplot(data = dta, 
+       aes(x = science.input_round, y = science))+geom_point() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+### anova：各區段投入程度（4～14）
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+anova(m3 <- lm(science ~ science.input_round, data = dta))
+```
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, 
+       aes(x = science.hours, y = science))+geom_boxplot() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+
+### anova：各區段投入時間（<45min；45min~3hr；>3hr）
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+anova(m4 <- lm(science ~ science.hours, data = dta))
+```
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+m5 <- lm(science~+science.interest_round+science.evaluation_round+science.input_round+science.hours,data=dta)
+```
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+anova(m5)
+```
+
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, 
+       aes(group = science.interest_round, 
+          y = science, x = science.evaluation_round)) +
+  geom_point() +
+  stat_smooth(method = 'lm', se = F) +
+  stat_smooth(aes(group = science.interest_round, 
+          y = science, x = science.evaluation_round), 
+          method = 'lm', se = F) + 
+  facet_grid( . ~  science.interest_round) +
+  labs(x = '價值評估', y = '科學分數')
+```
+
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+library(coefplot)
+```
+
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+coefplot(m5, xlab = '估計值', ylab = '迴歸變項', title = '反應變項 = 科學分數')
+```
+
+### 興趣+價值評估+投入程度+投入時間
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+fit_m5 <- data.frame(dta[, c(7,14,15,16, 11)], fitted = fitted(m5), resid = resid(m5),
+                     infl = influence(m5)$hat )
+
+ggplot(data = fit_m5, aes(x =science, group = science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+### 興趣+價值評估+投入程度+投入時間+父母教育程度
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+m6 <- lm(science~+science.interest_round+science.evaluation_round+science.input_round+science.hours+parental.education,data=dta)
+
+fit_m6 <- data.frame(dta[, c(7,14,15,16, 11,12)], fitted = fitted(m6), resid = resid(m6),
+                     infl = influence(m6)$hat )
+
+ggplot(data = fit_m6, aes(x =science, group =science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+require(lattice)
+qqmath(~ scale(resid) | science.hours, data = fit_m6, type = c('p', 'g', 'r'),
+       xlab = '常態位數', ylab = '標準化殘差', layout = c(2, 3),
+       pch = '.', cex = 2)
+```
+
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+m7<- lm(science~+science.interest_round+science.evaluation_round+parental.education,data=dta)
+```
+
+### 興趣+價值評估+父母教育程度
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+fit_m7 <- data.frame(dta[, c(7,14,15,12)], fitted = fitted(m7), resid = resid(m7),
+                     infl = influence(m7)$hat )
+
+ggplot(data = fit_m7, aes(x =science, group =parental.education )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,parental.education, mean))), linetype = 'dotted')+
+ facet_grid(parental.education ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+### 興趣+價值評估+投入時間+父母教育程度
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+m8<- lm(science~+science.interest_round+science.evaluation_round+science.hours+parental.education,data=dta)
+fit_m8 <- data.frame(dta[, c(7,14,15,12,11)], fitted = fitted(m8), resid = resid(m8),
+                     infl = influence(m8)$hat )
+
+ggplot(data = fit_m8, aes(x =science, group =science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+### 興趣+價值評估+投入時間+父母教育程度+投入資源
+```{r cache=TRUE, message=FALSE, warning=FALSE, comment=''}
+dta$educational.resources_round<-round(dta$educational.resources)
+dta$educational.resources_round<-factor(dta$educational.resources_round, 
+                       levels = c(4:14))
+m9<- lm(science~+science.interest_round+science.evaluation_round+science.hours+parental.education+educational.resources_round,data=dta)
+fit_m9 <- data.frame(dta[, c(7,14,15,12,11,17)], fitted = fitted(m9), resid = resid(m9),
+                     infl = influence(m9)$hat )
+
+ggplot(data = fit_m9, aes(x =science, group =science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
