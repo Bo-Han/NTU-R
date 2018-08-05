@@ -87,3 +87,19 @@ https://bo-han.github.io/NTU-R/week1/hw1.html
 1. 完成課堂還沒完成的任務task4
 2. 成果網址[hw4-regression](https://bo-han.github.io/NTU-R/week4/hw4-part1)
 3. optional datacamp課程
+
+---
+### week5
+### 課堂上
+1. 上午
+   1. 聽演講
+   
+2. 下午
+   1. 了解shiny基本原則
+   2. 討論期末報告架構
+
+### 回家
+Final project!!!
+
+---
+### week6
