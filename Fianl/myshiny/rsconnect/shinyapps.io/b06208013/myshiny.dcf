@@ -1,0 +1,12 @@
+name: myshiny
+title: myshiny
+username:
+account: b06208013
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 393045
+bundleId: 1511045
+url: https://b06208013.shinyapps.io/myshiny/
+when: 1533106904.55784
+asMultiple: FALSE
+asStatic: FALSE
