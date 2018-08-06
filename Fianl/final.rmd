@@ -13,6 +13,7 @@ library(rpart)
 library(DMwR)
 library(grid)
 library(coefplot)
+library(randomForest)
 ```
 
 > #### Read file
@@ -72,3 +73,33 @@ prettyTree(regtree)
 ```{r message=FALSE, warning=FALSE, comment=''}
 coefplot( lm(Fscore~+enrollment+adolescent_fertility+Labor+Schooling_years+Primary_edu+Employer,data=dm5))
 ```
+
+> #### Random forest
+
+```{r message=FALSE, warning=FALSE, comment=''}
+set.seed(8000)
+rf2 <- randomForest(na.omit(dm5)$Fscore~., data=na.omit(dm5)[,8:10], ntree=500, importance=T)
+rf.predictions <- predict(rf2,na.omit(dm5))
+nmse.rf <- mean((rf.predictions-na.omit(dm5)[,"Fscore"])^2)/mean(
+  (mean(na.omit(dm5)$Fscore)-na.omit(dm5)[,"Fscore"])^2)
+print(nmse.rf)
+```
+
+
+
+```{r message=FALSE, warning=FALSE, comment=''}
+rf.plt.data1 <- data.frame(cbind(rf.predictions,na.omit(dm5)[,"Fscore"]))
+colnames(rf.plt.data1)<-c("rf.predictions","Fscore")
+
+
+errplt.rf1 <- ggplot(rf.plt.data1,aes(rf.predictions,Fscore))+
+  geom_point()+
+  xlab("Predicted Scores")+
+  ylab("Actual Scores")+
+  geom_abline(intercept=0,slope=1,color="#0066CC",size=1)
+
+errplt.rf1
+
+varImpPlot(rf2,type=1)
+```
+
