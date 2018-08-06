@@ -1,0 +1,263 @@
+---
+title: "hw4-regression"
+---
+
+### 載入ggplot2繪圖套件，以及匯入資料
+```{r message=FALSE, warning=FALSE, comment=''}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+dta <- read.table(file = "data/TIMSS2011TW.txt", header = TRUE)
+```
+
+### 檢視資料結構
+```{r message=FALSE, warning=FALSE, comment=''}
+str(dta)
+```
+
+### 各個欄位統計資料
+```{r message=FALSE, warning=FALSE, comment=''}
+summary(dta)
+```
+
+## 性別V.S.自然科學成績
+### 男女成績的盒狀圖：可以看出兩者其實差不多
+```{r message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, aes(x = gender, y = science))+
+ geom_boxplot() + coord_flip() +
+ labs( y = 'science', x = 'gender', 
+       title = 'Science Score Box')
+```
+
+### 利用T檢定：p-value>0.05，代表性別影響不顯著，無法反駁，再繼續往下找
+```{r message=FALSE, warning=FALSE, comment=''}
+
+t.test(science ~ gender, data = dta)
+
+t.test(science ~ gender, data = dta, var.equal = TRUE)
+```
+
+## 學習興趣V.S.自然科學成績
+### ☆★重點★☆：先把科學學習興趣的數值四捨五入，才能夠變為「質變數」
+### 並且要將numeric格式轉為有順序的factor
+### 各區段學習興趣（5～13）的盒狀圖，可以看出興趣越大，成績越高，代表兩者很可能有關連
+```{r message=FALSE, warning=FALSE, comment=''}
+library(Hmisc)
+dta$science.interest_round<-round(dta$science.interest)
+dta$science.interest_round<-factor(dta$science.interest_round, 
+                       levels = c(5:13))
+
+ggplot(data = dta, 
+       aes(x = science.interest_round, y = science))+geom_boxplot() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+### anova：各區段學習興趣（5～13）
+### p-value小於0.05，代表顯著，可以反駁
+```{r message=FALSE, warning=FALSE, comment=''}
+anova(m1 <- lm(science ~ science.interest_round, data = dta))
+```
+
+## science.evaluation 價值評估V.S.自然科學成績：盒狀圖
+### 一樣四捨五入再轉為factor
+### 各區段價值評估（4～13）的盒狀圖，可以看出若是覺得科學有其學習的價值，成績就越高
+```{r message=FALSE, warning=FALSE, comment=''}
+dta$science.evaluation_round<-round(dta$science.evaluation)
+dta$science.evaluation_round<-factor(dta$science.evaluation_round, 
+                       levels = c(4:13))
+
+ggplot(data = dta, 
+       aes(x = science.evaluation_round, y = science))+geom_boxplot() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+## science.evaluation 價值評估V.S.自然科學成績：分布密度圖
+### 評估價值的數值越高，分布的高峰愈往右邊成績高處
+```{r message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, 
+       aes(fill = science.evaluation_round, x = science))+geom_density(alpha=0.3) +
+  scale_x_continuous(breaks = seq(250,750,by=100)) 
+```
+
+### anova：各區段價值評估（4～13）
+### p-value小於0.05，代表顯著，可以反駁
+```{r message=FALSE, warning=FALSE, comment=''}
+anova(m2 <- lm(science ~ science.evaluation_round, data = dta))
+```
+
+## science.input 投入程度V.S.自然科學成績
+### 各區段投入程度（4～14）的點散佈圖，投入的努力越大，收穫越多，成績越高，但不太明顯
+```{r message=FALSE, warning=FALSE, comment=''}
+dta$science.input_round<-round(dta$science.input)
+dta$science.input_round<-factor(dta$science.input_round, 
+                       levels = c(4:14))
+
+ggplot(data = dta, 
+       aes(x = science.input_round, y = science))+geom_point() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+### anova：各區段投入程度（4～14）
+### p-value小於0.05，代表顯著，可以反駁
+```{r message=FALSE, warning=FALSE, comment=''}
+anova(m3 <- lm(science ~ science.input_round, data = dta))
+```
+
+## science.input 投入時間V.S.科學成績
+### 三種時段的盒狀圖，結果看出三者的差異並不大
+```{r message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, 
+       aes(x = science.hours, y = science))+geom_boxplot() +
+  scale_y_continuous(breaks = seq(250,750,by=250)) +
+  geom_hline(yintercept = mean(dta$science) , 
+             linetype = 'dotted') +
+  coord_flip()
+```
+
+
+### anova：各區段投入時間（<45min；45min~3hr；>3hr）
+### 但anova結果出來顯示，p-value小於0.05是顯著的，還得繼續分析下去
+```{r message=FALSE, warning=FALSE, comment=''}
+anova(m4 <- lm(science ~ science.hours, data = dta))
+```
+
+
+### 學習興趣+價值評估+投入程度+投入時間的線性model -> m5
+```{r message=FALSE, warning=FALSE, comment=''}
+m5 <- lm(science~+science.interest_round+science.evaluation_round+science.input_round+science.hours,data=dta)
+```
+
+### anova(m5)一起比較，可以看到「學習興趣」和「價值評估」的p-value是最顯著
+```{r message=FALSE, warning=FALSE, comment=''}
+anova(m5)
+```
+
+### 推測對自然科學的興趣與評斷自然科學的價值呈現正相關
+### 可以看出對自然科學興趣大的人，覺得自然科學也有價值的人越聚集於多的地方，反之亦然
+### 且幾乎都是正相關，700分以上之高分群大都是學習興趣9以上的學生
+### 因此判定學習興趣及價值評估對自然科學成績的影響很大
+```{r message=FALSE, warning=FALSE, comment=''}
+ggplot(data = dta, 
+       aes(group = science.interest_round, 
+          y = science, x = science.evaluation_round)) +
+  geom_point() +
+  stat_smooth(method = 'lm', se = F) +
+  stat_smooth(aes(group = science.interest_round, 
+          y = science, x = science.evaluation_round), 
+          method = 'lm', se = F) + 
+  facet_grid( . ~  science.interest_round) +
+  labs(x = '價值評估', y = '科學分數')
+```
+
+### 載入畫圖套件
+```{r message=FALSE, warning=FALSE, comment=''}
+library(coefplot)
+```
+
+### 迴歸變項的影響力
+```{r message=FALSE, warning=FALSE, comment=''}
+coefplot( lm(science~+science.interest_round+science.evaluation_round,data=dta), xlab = '估計值', ylab = '迴歸變項', title = '反應變項 = 科學分數')
+```
+
+### 真實觀測值與預測值的疊合PART1：興趣+價值評估+投入程度+投入時間
+### 不是非常吻合，再繼續找
+```{r message=FALSE, warning=FALSE, comment=''}
+fit_m5 <- data.frame(dta[, c(7,14,15,16, 11)], fitted = fitted(m5), resid = resid(m5),
+                     infl = influence(m5)$hat )
+
+ggplot(data = fit_m5, aes(x =science, group = science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+### 真實觀測值與預測值的疊合PART2：興趣+價值評估+投入程度+投入時間+父母教育程度
+### 還好，再繼續找
+```{r message=FALSE, warning=FALSE, comment=''}
+m6 <- lm(science~+science.interest_round+science.evaluation_round+science.input_round+science.hours+parental.education,data=dta)
+
+fit_m6 <- data.frame(dta[, c(7,14,15,16, 11,12)], fitted = fitted(m6), resid = resid(m6),
+                     infl = influence(m6)$hat )
+
+ggplot(data = fit_m6, aes(x =science, group =science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+### 看一下依據價值評估的殘差Q-Q圖
+```{r message=FALSE, warning=FALSE, comment=''}
+require(lattice)
+qqmath(~ scale(resid) | science.evaluation_round, data = fit_m6, type = c('p', 'g', 'r'),
+       xlab = '常態位數', ylab = '標準化殘差', layout = c(2, 3),
+       pch = '.', cex = 2)
+```
+
+
+### 真實觀測值與預測值的疊合PART3：興趣+價值評估+父母教育程度
+### 拿掉投入程度+投入時間後，反而更不吻合ㄌ，再繼續...
+```{r message=FALSE, warning=FALSE, comment=''}
+m7<- lm(science~+science.interest_round+science.evaluation_round+parental.education,data=dta)
+fit_m7 <- data.frame(dta[, c(7,14,15,12)], fitted = fitted(m7), resid = resid(m7),
+                     infl = influence(m7)$hat )
+
+ggplot(data = fit_m7, aes(x =science, group =parental.education )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,parental.education, mean))), linetype = 'dotted')+
+ facet_grid(parental.education ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+### 真實觀測值與預測值的疊合PART4：興趣+價值評估+投入時間+父母教育程度
+### 再加入投入時間後，變回跟PART2的結果差不多，再繼續...
+```{r message=FALSE, warning=FALSE, comment=''}
+m8<- lm(science~+science.interest_round+science.evaluation_round+science.hours+parental.education,data=dta)
+fit_m8 <- data.frame(dta[, c(7,14,15,12,11)], fitted = fitted(m8), resid = resid(m8),
+                     infl = influence(m8)$hat )
+
+ggplot(data = fit_m8, aes(x =science, group =science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```
+
+### 真實觀測值與預測值的疊合PART5：興趣+價值評估+投入時間+父母教育程度+投入資源
+### 加入投入資源看看，一樣先四捨五入，再轉為factor
+### 由結果可知，這是最吻合的，所以最後可以推斷，
+### 興趣+價值評估+投入時間+父母教育程度+投入資源
+### 是五項影響學生自然科學成績的最主要的因子。
+```{r message=FALSE, warning=FALSE, comment=''}
+dta$educational.resources_round<-round(dta$educational.resources)
+dta$educational.resources_round<-factor(dta$educational.resources_round, 
+                       levels = c(4:14))
+m9<- lm(science~+science.interest_round+science.evaluation_round+science.hours+parental.education+educational.resources_round,data=dta)
+fit_m9 <- data.frame(dta[, c(7,14,15,12,11,17)], fitted = fitted(m9), resid = resid(m9),
+                     infl = influence(m9)$hat )
+
+ggplot(data = fit_m9, aes(x =science, group =science.hours )) +
+ stat_density(geom = 'path', position = 'identity') +
+ stat_density(geom = 'path', position = 'identity', aes(x = fitted)) +
+ geom_vline(xintercept = c(with(dta, tapply(science,science.hours, mean))), linetype = 'dotted')+
+ facet_grid(science.hours ~ .) +
+ scale_x_continuous(breaks = seq(200, 900, by = 100))+
+ labs(x = '科學分數', y = '機率密度')
+```

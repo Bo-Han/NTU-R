@@ -8,8 +8,8 @@ library(ggplot2)
 colnames(gender)<-c("Country.Code","Country.Name","Series.Name",as.character(c(1992:2016)))
 gen1<-cbind(gender[,1],gender[,4:28])
 
-#gen1[264:526,2:26]<-(gen1[264:526,2:26]*(-1)+1000)/10
-#gen1[1316:1578,2:26]<-gen1[1316:1578,2:26]*5
+gen1[264:526,2:26]<-(gen1[264:526,2:26]*(-1)+1000)/10
+gen1[1316:1578,2:26]<-gen1[1316:1578,2:26]*5
 
 colnames(gen1)<-c("Country.Code",as.character(c(1992:2016)))
 gen2<-gather(gen1,year,gender_var,-Country.Code)
@@ -92,6 +92,38 @@ ggplot(dm5,aes(x=`Adolescent fertility rate (Adjusted)`,y=Fscore))+geom_point()+
 ggplot(dm5,aes(x=`Labor force, female (% of total labor force)`,y=Fscore))+geom_point()+geom_smooth(method="lm")+scale_y_log10()
 ggplot(dm5,aes(x=`Expected years of schooling, female`,y=Fscore))+geom_point()+geom_smooth(method="lm")+scale_y_log10()
 ggplot(dm5,aes(x=`Primary education, pupils (% female)`,y=Fscore))+geom_point()+geom_smooth(method="lm")+scale_y_log10()
-ggplot(dm5,aes(x=`Employers, female (% of female employment) (modeled ILO estimate)`,y=Fscore))+geom_point()+geom_smooth(method="lm")+scale_y_log10()
+ggplot(dm5,aes(x=`Employers, female (% of female employment) (modeled ILO estimate)`,y=Fscore))+geom_point()+geom_smooth(method="lm")+scale_y_log10()+scale_x_log10()
 
 summary(dm5)
+
+#########
+
+colnames(dm5)<-c("NOC","Medal_sum","join_people","Female_score","gen_ave","enrollment","Adolescent_fertility","Labor","schooling_year","Primary_edu","Employer")
+library(Hmisc)
+
+summary(dm5)
+
+anova(m1 <- lm(Female_score ~ enrollment, data = dm5))
+
+library(rpart)
+library(DMwR)
+library(grid)
+
+regtree <- rpart(dm5$Female_score~., data=dm5[,8:10])
+prettyTree(regtree)
+
+m6 <- lm(Female_score~+enrollment+Adolescent_fertility+Labor+schooling_year+Primary_edu+Employer,data=dm5)
+
+anova(m6)
+
+library(randomForest)
+library(coefplot)
+
+set.seed(8000)
+rf2 <- randomForest(dm5$Fscore~., data=dm5[,8:10], ntree=500, importance=T)
+rf.predictions <- predict(rf2,dm5)
+nmse.rf <- mean((rf.predictions-dm5[,"Female_score"])^2)/mean(
+  (mean(dm5$Female_score)-dm5[,"Female_score"])^2)
+print(nmse.rf)
+
+coefplot( lm(Female_score~+enrollment+Adolescent_fertility+Labor+schooling_year+Primary_edu+Employer,data=dm5))
