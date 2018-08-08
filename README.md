@@ -103,5 +103,5 @@ Final project!!!
 
 ---
 ### week6
-[Final project](https://antonia.shinyapps.io/new_data/)
+[Final project](https://antonia.shinyapps.io/new_data/)<br />
 [ppt](https://drive.google.com/open?id=1d3d6PNbaPidOxPza3bvfNcccYadiu0Go)
