@@ -1,0 +1,2 @@
+"0","regtree <- rpart(dm5$Fscore~., data=dm5[,9:11])"
+"0","prettyTree(regtree)"

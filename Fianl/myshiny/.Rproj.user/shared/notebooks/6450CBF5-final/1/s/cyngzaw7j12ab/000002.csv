@@ -1,0 +1,7 @@
+"0","imp <- importance(rf2)"
+"0","impvar <- rownames(imp)[order(imp[, 1], decreasing=TRUE)]"
+"0","op <- par(mfrow=c(2, 3))"
+"0","for (i in seq_along(impvar)) {"
+"0","  partialPlot(rf2, na.omit(dm5)[,8:10], impvar[i], rug=TRUE, xlab=impvar[i],main=paste(impvar[i]))"
+"0","  abline(h=mean(na.omit(dm5)$Fscore),col=""red"")"
+"0","}"

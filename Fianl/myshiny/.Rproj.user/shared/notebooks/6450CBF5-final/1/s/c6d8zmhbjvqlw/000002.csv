@@ -1,0 +1,8 @@
+"0","rf.plt.data1 <- data.frame(cbind(rf.predictions,na.omit(dm5)[,""Fscore""]))"
+"0","colnames(rf.plt.data1)<-c(""rf.predictions"",""Fscore"")"
+"0","errplt.rf1 <- ggplot(rf.plt.data1,aes(rf.predictions,Fscore))+"
+"0","  geom_point()+"
+"0","  xlab(""Predicted Scores"")+"
+"0","  ylab(""Actual Scores"")+"
+"0","  geom_abline(intercept=0,slope=1,color=""#0066CC"",size=1)"
+"0","errplt.rf1"
