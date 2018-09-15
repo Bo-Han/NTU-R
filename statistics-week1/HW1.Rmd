@@ -1,30 +1,135 @@
 ---
 title: "HW1"
-author: "Bo-Han"
+author: "B06208013 地理二 林柏翰"
 date: "2018年9月14日"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+### ToDo 3.1 基本運算：大學時光占人生的比例
+Compute the difference between 2018 and the year you started at this university and divide this by the difference between 2018 and the year you were born. Multiply this with 100 to get the percentage of your life you have spent at this university. Use brackets if you need them.
+```{r message=FALSE, warning=FALSE, comment=''}
+(2018-2017)/(2018-1999)*100 
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+### ToDo 3.2 變數
+Repeat the previous ToDo, but with several steps in between. You can give the variables any name you want, but the name has to start with a letter.
+```{r message=FALSE, warning=FALSE, comment=''}
+a=2018
+b=2017
+c=1999
+(a-b)/(a-c)*100 #指定數值，儲存於某一變數
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+### ToDo 3.4 向量與函數：平均值
+Compute the sum of 4, 5, 8 and 11 by first combining them into a vector and then using the function sum.
+```{r message=FALSE, warning=FALSE, comment=''}
+t=c(4,5,8,11)
+mean(t)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### ToDo 3.5 函數與繪圖：隨機數字
+Plot 100 normal random numbers.
+```{r message=FALSE, warning=FALSE, comment=''}
+x=rnorm(100)
+plot(x)
+```
+
+### ToDo 4 提示
+Find help for the sqrt function.
+```{r message=FALSE, warning=FALSE, comment=''}
+help(sqrt)
+```
+
+### ToDo 5 連動Rscript檔案
+Make a file called firstscript.R containing Rcode that generates 100 random numbers and plots them, and run this script several times.
+```{r message=FALSE, warning=FALSE, comment=''}
+source("firstscript.R")
+```
+
+### ToDo 6.2 矩陣
+Put the numbers 31 to 60 in a vector named P and in a matrix with 6 rows and 5 columns named Q. Tip: use the function seq. Look at the different ways scalars, vectors and matrices are denoted in the workspace window.
+```{r message=FALSE, warning=FALSE, comment=''}
+P=c(31:60)
+Q=matrix(P,ncol=5)
+Q
+```
+
+### ToDo 6.3 資料表Data Frame與繪圖
+Make a script file which constructs three random normal vectors of length 100. Call these vectors x1, x2 and x3. Make a data frame called t with three columns (called a, b and c) containing respectively x1, x1+x2 and x1+x2+x3. Call plot(t) for this data frame. Can you understand the results? Rerun this script a few times.
+```{r message=FALSE, warning=FALSE, comment=''}
+x1=rnorm(100)
+x2=rnorm(100)
+x3=rnorm(100)
+t=data.frame("a"=x1,"b"=x1+x2,"c"=x1+x2+x3)
+plot(t)
+```
+
+### ToDo 7 資料視覺化：圖表展示
+Add these lines to the script file of the previous section. Try to find out, either by experimenting or by using the help, what the meaning is of rgb, the last argument of rgb, lwd, pch, cex.
+```{r message=FALSE, warning=FALSE, comment=''}
+plot(t$a,type="l", ylim=range(t),lwd=2, col=rgb(1,0,0,0.3))
+lines(t$b, type="s", lwd=2,col=rgb(0.3,0.4,0.3,0.9))
+points(t$c, pch=20, cex=2,col=rgb(0.3,0.5,0.1,0.3))
+#rgb:顏色（紅、綠、藍、透明度）
+#lwd:線的粗細
+#pch:點的樣式
+#cex:點的大小
+```
+
+### ToDo 8 寫檔與讀檔：txt檔
+Make a file called tst1.txt in Notepad from the example in Figure 4 and store it in your working directory. Write a script to read it, to multiply the column called g by 5 and to store it as tst2.txt.
+```{r message=FALSE, warning=FALSE, comment=''}
+ab=data.frame(a=c(1,2,4,8,16,32),g=c(2,4,8,16,32,64),x=c(3,6,12,24,48,96))
+write.table(ab, file="tst1.txt", row.names=FALSE)
+cd=read.table(file="tst1.txt", header=TRUE)
+cd$g=cd$g*5
+tst2.txt=cd
+tst2.txt
+```
+
+### ToDo 9 缺漏資料：NA
+Compute the mean of the square root of a vector of 100 random numbers. What happens?
+```{r message=FALSE, warning=FALSE, comment=''}
+y=rnorm(100)
+mean(sqrt(y))
+```
+
+### ToDo 10.2 R裡面的時間與繪圖：今天、聖誕節、生日收到的禮物數量
+Make a graph with on the x-axis: today, Sinterklaas 2017 and your next birthday and on the y-axis the number of presents you expect on each of these days. Tip: make two vectors first.
+```{r message=FALSE, warning=FALSE, comment=''}
+vec1=strptime(c("20180914","20171225","20190713") ,format="%Y%m%d")
+vec2=c(1,3,4)
+u=data.frame(x=vec1,y=vec2)
+library(ggplot2)
+ggplot(u,aes(x=x,y=y))+geom_point(cex=6,col=rgb(0.9,0.4,0,0.5))+xlab("時間")+ylab("預期收到的禮物")
+```
+
+### ToDo 11.2 迴圈
+Make a vector from 1 to 100. Make a for-loop which runs through the whole vector. Multiply the elements which are smaller than 5 and larger than 90 with 10 and the other elements with 0.1.
+```{r message=FALSE, warning=FALSE, comment=''}
+n=c(1:100)
+for (i in 1:100){
+  if (n[i]<5 | n[i]>90){
+    n[i]=n[i]*10
+  }else{
+    n[i]=n[i]*0.1
+  }
+}
+n
+```
+
+### ToDo 11.3 設計函數
+Write a function for the previous ToDo, so that you can feed it any vector you like (as argument). Use a for-loop in the function to do the computation with each element. Use the standard R function length in the specification of the counter.
+```{r message=FALSE, warning=FALSE, comment=''}
+myfunc=function(arg1,arg2){
+  for(i in 1:100){
+    arg1[i]=round(arg1[i])
+    arg2[i]=round(arg2[i])
+  }
+  arg3=(arg1+arg2)/2
+  c=sum(arg3)
+  return(c)
+}
+myfunc(x1,x2)
+```
