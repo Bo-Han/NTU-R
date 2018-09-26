@@ -1,0 +1,234 @@
+---
+title: "HW2"
+author: "Bo-Han"
+date: "2018年9月22日"
+output: html_document
+---
+## ***Chapter 2 exercises***
+### **Exercise 2.8**
+### a.
+### Ans: 2391
+
+### b.
+### Ans: People who aged 65 or older.
+
+### c. 
+### Ans: Blood pressure and whether or not someone attends religious services regularly.
+
+### d.
+### Ans: Sample data. 因為研究者從其追蹤的2391筆樣本推論至更大的母體，並得到一個普世性的結論（從文中第一段可得知）。
+
+### **Exercise 2.20**
+### Ans: Explanatory variable: 抽菸與否; Reponse variable: 有無得到阿茲海默症或其他癡呆症。兩者皆是類別變數Categorical variables。
+
+### **Exercise 2.30**
+### a. 
+```{r message=FALSE, warning=FALSE, comment=''}
+1700/2470*100
+```
+### b.
+```{r message=FALSE, warning=FALSE, comment=''}
+1056/1700*100
+```
+### c.
+```{r message=FALSE, warning=FALSE, comment=''}
+300/657*100
+```
+### d.
+```{r message=FALSE, warning=FALSE, comment=''}
+41/113*100
+```
+
+### **Exercise 2.32**
+### a.
+```{r message=FALSE, warning=FALSE, comment=''}
+rsho=c(20.9,30.6,24.7,15.7,8.1)
+names(rsho)=c("Under 20","20-24","25-29","30-34","35 and Over")
+barplot(rsho, main="The Ages Mothers Had a First Child in U.S.", col=rainbow(5),
+        legend = rownames(rsho),xlab="age",ylab="%")
+```
+
+### b.
+```{r message=FALSE, warning=FALSE, comment=''}
+lb=paste(names(rsho),":",rsho,"%")
+pie(rsho,labels=lb,main="The Ages Mothers Had a First Child in U.S.", col=rainbow(5))
+```
+
+### c.
+### Ans: 圓餅圖比較適合傳達「百分比」資料；長條圖較適合傳達「總數」資料，故此題圓餅圖呈現較合適，但以長條圖呈現也沒有絕對不可。
+
+### **Exercise 2.46**
+### a.
+```{r message=FALSE, warning=FALSE, comment=''}
+mu=c(220,20,50,450,300,30,20,50,200,35,25,50,250,100,0,100,20,13,200,2,125,150,90,60)
+stem(mu)
+```
+
+### b.
+#### 註：此直方圖以20為一區間，包含下界，不包含上界
+```{r message=FALSE, warning=FALSE, comment=''}
+mu=c(220,20,50,450,300,30,20,50,200,35,25,50,250,100,0,100,20,13,200,2,125,150,90,60)
+hist(mu,breaks=20,main='CDs Distribution',xlab="CDs",col="pink",right=F)
+```
+
+### c.
+### Ans: 根據直方圖所呈現，最高的次數出現在20~40之間，且次數由低到高呈現「遞減」的趨勢
+
+### **Exercise 2.52**
+### a.
+#### 註：此直方圖以5為一區間，包含下界，不包含上界
+```{r message=FALSE, warning=FALSE, comment=''}
+ceo=c(42,47,48,49,49,50,50,50,50,51,51,51,52,54,54,55,55,55,55,56,57,57,57,57,57,58,58,59,59,60,60,60,61,61,62,62,62,62,62,63,63,64,64,64,64,67,67,69,74,78)
+hist(ceo,breaks=10,main='Ages of 50 highest paid CEOs',xlab="Ages",col="pink",right=F)
+```
+
+### b.
+```{r message=FALSE, warning=FALSE, comment=''}
+stem(ceo,scale=0.5)
+```
+
+### c.
+```{r message=FALSE, warning=FALSE, comment=''}
+stripchart(ceo, method = "stack", offset = .3, at = .15, pch = 19,cex=2,col="purple")
+```
+
+### d.
+### Ans: 從直方圖來看比較符合鐘形（常態分布），出現最多的次數偏中間，約為55~65歲，愈往兩旁愈是減少。
+
+### e.
+### Ans: Yes. 78 is the one outlier.
+```{r message=FALSE, warning=FALSE, comment=''}
+#library(outliers)
+#outlier(ceo)
+upper=summary(ceo)[5]+1.5*IQR(ceo)
+lower=summary(ceo)[2]-1.5*IQR(ceo)
+length(ceo[ceo>upper | ceo<lower])>0
+```
+
+### f.
+### Ans: 可能薪資比較會出現極端值，因為不同公司CEO的薪資落差好像有點大；年紀也是有可能，不過因為大部分都是集中在中年，所以就比較少出現。
+
+### **Exercise 2.66**
+### a.
+```{r message=FALSE, warning=FALSE, comment=''}
+blo=c(110,123,132,150,127,118,102,122)
+summary(blo)[3]
+```
+
+### b.
+```{r message=FALSE, warning=FALSE, comment=''}
+summary(blo)[2]
+summary(blo)[5]
+```
+
+### c.
+```{r message=FALSE, warning=FALSE, comment=''}
+IQR(blo)
+```
+
+### d.
+```{r message=FALSE, warning=FALSE, comment=''}
+upper2=summary(blo)[5]+1.5*IQR(blo)
+lower2=summary(blo)[2]-1.5*IQR(blo)
+blo[blo>upper2 | blo<lower2]
+```
+
+### e,
+```{r message=FALSE, warning=FALSE, comment=''}
+boxplot(blo,ylab="Blood pressure",main="Box Plot of Systolic")
+```
+
+### **Exercise 2.76**
+### a.
+```{r message=FALSE, warning=FALSE, comment=''}
+g1=c(2,30,35,70,100,120,135,150,190,200)
+summary(g1)
+```
+
+### b.
+```{r message=FALSE, warning=FALSE, comment=''}
+g2=c(8,12,16,29,35,40,45,46,95)
+summary(g2)
+```
+
+### c.
+```{r message=FALSE, warning=FALSE, comment=''}
+rg=c(max(g1)-min(g1),max(g2)-min(g2))
+names(rg)=c("Group1","Group2")
+rg
+```
+
+### d.
+```{r message=FALSE, warning=FALSE, comment=''}
+boxplot(g1,g2,col=c("aquamarine","mediumpurple"),xlab="Group",ylab="Population in Millions",names=c("1","2"))
+```
+
+### **Exercise 2.96**
+### Ans: 5。若成績為常態分布，標準差為5，平均是70，代表約有95%的情況成績會落在60到80之間，能考到80分以上只有2.5%的情況，相對較難；而若標準差是15，約有68%情況成績會落在55到85分之間，考到80分並非特別困難。
+
+### **Exercise 2.104**
+```{r message=FALSE, warning=FALSE, comment=''}
+me=56 #平均值
+sd=2 #標準差
+```
+
+### a.
+```{r message=FALSE, warning=FALSE, comment=''}
+me-2*sd
+```
+### b.
+```{r message=FALSE, warning=FALSE, comment=''}
+me+2*sd
+```
+### c.
+```{r message=FALSE, warning=FALSE, comment=''}
+me+sd
+```
+
+## ***R Practice***
+```{r message=FALSE, warning=FALSE, comment=''}
+MyOutlierDetect=function(arg1,arg2){
+  Student=read.csv('Student.csv')
+  if (arg1=='GPA'){  
+    upper3=summary(Student$GPA)[5]+1.5*IQR(Student$GPA, na.rm = T)
+    lower3=summary(Student$GPA)[2]-1.5*IQR(Student$GPA, na.rm = T)
+    if (arg2>upper3 | arg2<lower3) {
+      return("YES")
+    }else{
+      return("NO")
+    }
+  }else if(arg1=='MissClass'){  
+    upper3=summary(Student$MissClass)[5]+1.5*IQR(Student$MissClass, na.rm = T)
+    lower3=summary(Student$MissClass)[2]-1.5*IQR(Student$MissClass, na.rm = T)
+    if (arg2>upper3 | arg2<lower3) {
+      return("YES")
+    }else{
+      return("NO")
+    }
+  }else if(arg1=='PartyDays'){  
+    upper3=summary(Student$PartyDays)[5]+1.5*IQR(Student$PartyDays, na.rm = T)
+    lower3=summary(Student$PartyDays)[2]-1.5*IQR(Student$PartyDays, na.rm = T)
+    if (arg2>upper3 | arg2<lower3) {
+      return("YES")
+    }else{
+      return("NO")
+    }
+  }else if(arg1=='StudyHrs'){  
+    upper3=summary(Student$StudyHrs)[5]+1.5*IQR(Student$StudyHrs, na.rm = T)
+    lower3=summary(Student$StudyHrs)[2]-1.5*IQR(Student$StudyHrs, na.rm = T)
+    if (arg2>upper3 | arg2<lower3) {
+      return("YES")
+    }else{
+      return("NO")
+    }
+  }
+}
+MyOutlierDetect('GPA' , 2)
+MyOutlierDetect('GPA' , 3.2)
+MyOutlierDetect('MissClass' , 3)
+MyOutlierDetect('MissClass' , 1)
+MyOutlierDetect('PartyDays' , 25)
+MyOutlierDetect('PartyDays' , 5)
+MyOutlierDetect('StudyHrs' , 50)
+MyOutlierDetect('StudyHrs' , 20)
+```
